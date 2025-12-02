@@ -4,18 +4,59 @@
   box-sizing: border-box;
 }
 
+:root {
+  /* Light mode colors (Telegram-like) */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f2f5;
+  --bg-tertiary: #e4e6eb;
+  --text-primary: #000000;
+  --text-secondary: #707579;
+  --border-color: #e4e6eb;
+  --message-sent: #0088cc;
+  --message-received: #ffffff;
+  --message-sent-text: #ffffff;
+  --message-received-text: #000000;
+  --header-bg: #0088cc;
+  --header-text: #ffffff;
+  --input-bg: #ffffff;
+  --sidebar-bg: #ffffff;
+  --chat-bg: #e5ddd5;
+  --chat-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%23d4d4d4' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
+}
+
+.dark {
+  /* Dark mode colors (Telegram-like) */
+  --bg-primary: #212121;
+  --bg-secondary: #181818;
+  --bg-tertiary: #2b2b2b;
+  --text-primary: #ffffff;
+  --text-secondary: #a8a8a8;
+  --border-color: #2b2b2b;
+  --message-sent: #3390ec;
+  --message-received: #2b2b2b;
+  --message-sent-text: #ffffff;
+  --message-received-text: #ffffff;
+  --header-bg: #2b2b2b;
+  --header-text: #ffffff;
+  --input-bg: #2b2b2b;
+  --sidebar-bg: #212121;
+  --chat-bg: #0e1621;
+  --chat-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%231a1a1a' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   min-height: 100vh;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-

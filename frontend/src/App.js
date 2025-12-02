@@ -6,6 +6,7 @@ import ChatList from './components/ChatList';
 import ChatWindow from './components/ChatWindow';
 import Profile from './components/Profile';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -37,7 +38,7 @@ function AppRoutes() {
         path="/chat/:chatId"
         element={
           <ProtectedRoute>
-            <ChatWindow />
+            <ChatList />
           </ProtectedRoute>
         }
       />
@@ -56,11 +57,13 @@ function AppRoutes() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <AppRoutes />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <AppRoutes />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

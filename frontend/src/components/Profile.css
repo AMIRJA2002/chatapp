@@ -7,12 +7,13 @@
 }
 
 .profile-card {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 20px;
   padding: 40px;
   width: 100%;
   max-width: 500px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
 }
 
 .profile-card .back-btn {
@@ -28,7 +29,7 @@
 .profile-card h1 {
   text-align: center;
   margin-bottom: 30px;
-  color: #667eea;
+  color: var(--message-sent);
   font-size: 32px;
 }
 
@@ -41,7 +42,7 @@
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--message-sent);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -61,7 +62,8 @@
 .upload-btn {
   display: inline-block;
   padding: 10px 20px;
-  background: #f0f0f0;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
@@ -69,7 +71,7 @@
 }
 
 .upload-btn:hover {
-  background: #e0e0e0;
+  background: var(--bg-tertiary);
 }
 
 .profile-card .form-group {
@@ -79,22 +81,24 @@
 .profile-card .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .profile-card .form-group input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .profile-card .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--message-sent);
 }
 
 .success {

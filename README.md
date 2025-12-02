@@ -65,22 +65,24 @@ python run.py
 
 #### Frontend
 
-**⚠️ اگر مشکل npm install دارید، به `frontend/README_INSTALL.md` مراجعه کنید.**
+**⚠️ اگر مشکل npm install دارید (به خصوص در ایران)، به `frontend/README_INSTALL.md` یا `frontend/NPM_IRAN_GUIDE.md` مراجعه کنید.**
 
 ```bash
 cd frontend
 
-# روش 1: استفاده از اسکریپت نصب (پیشنهادی)
+# روش 1: استفاده از اسکریپت ایرانی (پیشنهادی برای ایران 🇮🇷)
+chmod +x install-iran.sh
+./install-iran.sh
+
+# یا روش 2: استفاده از اسکریپت عمومی
 chmod +x install.sh
 ./install.sh
 
-# یا روش 2: نصب دستی
+# یا روش 3: نصب دستی با registry ایرانی
+npm config set registry https://npm.iranrepo.ir/
+npm config set strict-ssl false
 npm install
 npm start
-
-# یا روش 3: استفاده از registry ایرانی (اگر در ایران هستید)
-chmod +x install-iran.sh
-./install-iran.sh
 ```
 
 ## API Documentation

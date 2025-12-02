@@ -1,36 +1,58 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import api from '../services/api';
 import { getBackendUrl } from '../utils/config';
 import './ChatWindow.css';
 
-function ChatWindow() {
-  const { chatId } = useParams();
+function ChatWindow({ chatId: propChatId }) {
+  const { chatId: paramChatId } = useParams();
+  const chatId = propChatId || paramChatId;
   const { user } = useAuth();
+  const { darkMode } = useTheme();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [ws, setWs] = useState(null);
   const [chatInfo, setChatInfo] = useState(null);
+  const [chatBackground, setChatBackground] = useState(null);
+  const [showBackgroundMenu, setShowBackgroundMenu] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
+  const backgroundInputRef = useRef(null);
 
   useEffect(() => {
+    if (!chatId) return;
+    
+    // Load chat background from localStorage
+    const saved = localStorage.getItem(`chat_bg_${chatId}`);
+    setChatBackground(saved || null);
+    
     fetchMessages();
     fetchChatInfo();
-    connectWebSocket();
+    
+    // Connect WebSocket
+    const websocket = connectWebSocket();
+    setWs(websocket);
 
     return () => {
-      if (ws) {
-        ws.close();
+      if (websocket) {
+        websocket.close();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatId]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    if (chatBackground && chatId) {
+      localStorage.setItem(`chat_bg_${chatId}`, chatBackground);
+    }
+  }, [chatBackground, chatId]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -56,12 +78,9 @@ function ChatWindow() {
   };
 
   const connectWebSocket = () => {
-    const token = localStorage.getItem('token');
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const backendUrl = getBackendUrl();
     
-    // If backendUrl is empty (Docker/production), use relative URL
-    // Otherwise use full URL for development
     const wsUrl = backendUrl 
       ? `${protocol}//${backendUrl.replace('http://', '').replace('https://', '')}/ws/${chatId}`
       : `${protocol}//${window.location.host}/ws/${chatId}`;
@@ -76,7 +95,12 @@ function ChatWindow() {
       try {
         const data = JSON.parse(event.data);
         if (data.id && data.chat_id === chatId) {
-          setMessages((prev) => [...prev, data]);
+          setMessages((prev) => {
+            // Check if message already exists to prevent duplicates
+            const exists = prev.some(msg => msg.id === data.id);
+            if (exists) return prev;
+            return [...prev, data];
+          });
         }
       } catch (error) {
         console.error('Error parsing WebSocket message:', error);
@@ -91,7 +115,7 @@ function ChatWindow() {
       console.log('WebSocket disconnected');
     };
 
-    setWs(websocket);
+    return websocket;
   };
 
   const sendMessage = async (e) => {
@@ -99,14 +123,13 @@ function ChatWindow() {
     if (!newMessage.trim()) return;
 
     try {
-      const response = await api.post(`/api/chats/${chatId}/messages`, null, {
+      await api.post(`/api/chats/${chatId}/messages`, null, {
         params: {
           content: newMessage,
           message_type: 'text',
         },
       });
       setNewMessage('');
-      setMessages((prev) => [...prev, response.data]);
     } catch (error) {
       console.error('Error sending message:', error);
       alert('خطا در ارسال پیام');
@@ -118,7 +141,7 @@ function ChatWindow() {
     formData.append('file', file);
 
     try {
-      const response = await api.post(
+      await api.post(
         `/api/chats/${chatId}/messages/file`,
         formData,
         {
@@ -127,7 +150,6 @@ function ChatWindow() {
           },
         }
       );
-      setMessages((prev) => [...prev, response.data]);
     } catch (error) {
       console.error('Error sending file:', error);
       alert('خطا در ارسال فایل');
@@ -141,6 +163,32 @@ function ChatWindow() {
     }
   };
 
+  const handleBackgroundSelect = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setChatBackground(event.target.result);
+        setShowBackgroundMenu(false);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeBackground = () => {
+    setChatBackground(null);
+    localStorage.removeItem(`chat_bg_${chatId}`);
+    setShowBackgroundMenu(false);
+  };
+
+  const formatTime = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
   const getChatTitle = () => {
     if (!chatInfo) return 'چت';
     if (chatInfo.chat_type === 'group') {
@@ -152,14 +200,66 @@ function ChatWindow() {
     return 'چت';
   };
 
+  const getChatAvatar = () => {
+    if (!chatInfo) return null;
+    if (chatInfo.chat_type === 'group' && chatInfo.group_image) {
+      return chatInfo.group_image;
+    }
+    if (chatInfo.participants && chatInfo.participants.length > 0) {
+      return chatInfo.participants[0].profile_image;
+    }
+    return null;
+  };
+
   return (
-    <div className="chat-window-container">
+    <div 
+      className={`chat-window-container ${chatBackground ? 'has-custom-bg' : ''}`}
+      style={chatBackground ? { backgroundImage: `url(${chatBackground})` } : {}}
+    >
+      {chatBackground && <div className="chat-background-overlay" style={{ backgroundImage: `url(${chatBackground})` }} />}
+      
       <div className="chat-header">
-        <button onClick={() => navigate('/chats')} className="back-btn">
-          ← بازگشت
-        </button>
+        {getChatAvatar() && (
+          <img 
+            src={`${getBackendUrl()}${getChatAvatar()}`} 
+            alt="Avatar" 
+            className="chat-header-avatar"
+          />
+        )}
         <div className="chat-title">{getChatTitle()}</div>
+        <div className="chat-header-actions">
+          <button 
+            className="header-btn"
+            onClick={() => setShowBackgroundMenu(!showBackgroundMenu)}
+            title="تنظیمات پس‌زمینه"
+          >
+            🎨
+          </button>
+        </div>
       </div>
+
+      {showBackgroundMenu && (
+        <div className="background-menu">
+          <input
+            ref={backgroundInputRef}
+            type="file"
+            accept="image/*"
+            style={{ display: 'none' }}
+            onChange={handleBackgroundSelect}
+          />
+          <button onClick={() => backgroundInputRef.current?.click()}>
+            انتخاب تصویر
+          </button>
+          {chatBackground && (
+            <button onClick={removeBackground}>
+              حذف پس‌زمینه
+            </button>
+          )}
+          <button onClick={() => setShowBackgroundMenu(false)}>
+            بستن
+          </button>
+        </div>
+      )}
 
       <div className="messages-container">
         {messages.map((message) => (
@@ -189,8 +289,15 @@ function ChatWindow() {
                   📎 {message.content}
                 </a>
               )}
-              <div className="message-sender">
-                {message.sender_id === user?.id ? 'شما' : message.sender_name}
+              <div className="message-footer">
+                {message.sender_id !== user?.id && (
+                  <div className="message-sender">
+                    {message.sender_name}
+                  </div>
+                )}
+                <div className="message-time">
+                  {formatTime(message.created_at)}
+                </div>
               </div>
             </div>
           </div>
@@ -209,6 +316,7 @@ function ChatWindow() {
           type="button"
           onClick={() => fileInputRef.current?.click()}
           className="file-btn"
+          title="ارسال فایل"
         >
           📎
         </button>
@@ -219,8 +327,13 @@ function ChatWindow() {
           placeholder="پیام خود را بنویسید..."
           className="message-input"
         />
-        <button type="submit" className="send-btn">
-          ارسال
+        <button 
+          type="submit" 
+          className="send-btn"
+          disabled={!newMessage.trim()}
+          title="ارسال"
+        >
+          ➤
         </button>
       </form>
     </div>
@@ -228,4 +341,3 @@ function ChatWindow() {
 }
 
 export default ChatWindow;
-

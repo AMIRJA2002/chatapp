@@ -7,18 +7,19 @@
 }
 
 .auth-card {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 20px;
   padding: 40px;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
 }
 
 .auth-card h1 {
   text-align: center;
   margin-bottom: 30px;
-  color: #667eea;
+  color: var(--message-sent);
   font-size: 32px;
 }
 
@@ -29,35 +30,37 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  color: #333;
+  color: var(--text-primary);
   font-weight: 500;
 }
 
 .form-group input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #e0e0e0;
+  border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: var(--message-sent);
 }
 
 .btn-primary {
   width: 100%;
   padding: 12px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--message-sent);
   color: white;
   border: none;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -82,11 +85,11 @@
 .auth-link {
   text-align: center;
   margin-top: 20px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .auth-link a {
-  color: #667eea;
+  color: var(--message-sent);
   text-decoration: none;
   font-weight: 600;
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { getBackendUrl } from '../utils/config';
 import './ChatList.css';
 
 function ChatList() {
@@ -98,7 +99,7 @@ function ChatList() {
           <div className="user-info">
             <div className="user-avatar">
               {user?.profile_image ? (
-                <img src={`http://localhost:8009${user.profile_image}`} alt="Profile" />
+                <img src={`${getBackendUrl()}${user.profile_image}`} alt="Profile" />
               ) : (
                 <span>{user?.username?.charAt(0).toUpperCase()}</span>
               )}
@@ -138,7 +139,7 @@ function ChatList() {
                 <div className="chat-avatar">
                   {getChatImage(chat) ? (
                     <img
-                      src={`http://localhost:8009${getChatImage(chat)}`}
+                      src={`${getBackendUrl()}${getChatImage(chat)}`}
                       alt={getChatName(chat)}
                     />
                   ) : (

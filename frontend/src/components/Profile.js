@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { getBackendUrl } from '../utils/config';
 import './Profile.css';
 
 function Profile() {
@@ -101,7 +102,7 @@ function Profile() {
           <div className="profile-avatar-large">
             {user?.profile_image ? (
               <img
-                src={`http://localhost:8009${user.profile_image}`}
+                src={`${getBackendUrl()}${user.profile_image}`}
                 alt="Profile"
               />
             ) : (

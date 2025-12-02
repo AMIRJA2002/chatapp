@@ -466,7 +466,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10000;
+  z-index: 100000;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease;
   overflow-y: auto;
@@ -495,7 +495,7 @@
   position: relative;
   margin: 20px;
   box-sizing: border-box;
-  z-index: 10001;
+  z-index: 100001;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -899,11 +899,11 @@
   
   /* Ensure modals are above sidebar */
   .modal-overlay {
-    z-index: 10000 !important;
+    z-index: 100000 !important;
   }
   
   .modal {
-    z-index: 10001 !important;
+    z-index: 100001 !important;
   }
   
   .telegram-sidebar.mobile-visible {
@@ -1181,6 +1181,12 @@
     padding: 10px;
     align-items: flex-start;
     padding-top: 20px;
+    z-index: 100000 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 
   .modal {
@@ -1190,11 +1196,14 @@
     padding: 20px;
     max-height: calc(100vh - 40px);
     border-radius: 12px;
+    z-index: 100001 !important;
+    position: relative !important;
   }
 
   .settings-modal {
     max-width: calc(100% - 20px);
     width: calc(100% - 20px);
+    z-index: 100001 !important;
   }
 
   .modal h2 {
@@ -1229,6 +1238,12 @@
   .modal-overlay {
     padding: 5px;
     padding-top: 10px;
+    z-index: 100000 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
   }
 
   .modal {
@@ -1237,11 +1252,14 @@
     padding: 16px;
     max-height: calc(100vh - 20px);
     border-radius: 10px;
+    z-index: 100001 !important;
+    position: relative !important;
   }
 
   .settings-modal {
     max-width: calc(100% - 10px);
     width: calc(100% - 10px);
+    z-index: 100001 !important;
   }
 
   .modal h2 {

@@ -38,7 +38,8 @@ Content-Type: application/json
 {
   "username": "user123",
   "email": "user@example.com",
-  "password": "password123"
+  "password": "password123",
+  "full_name": "نام کامل" // optional
 }
 ```
 
@@ -51,8 +52,10 @@ Content-Type: application/json
     "id": "507f1f77bcf86cd799439011",
     "username": "user123",
     "email": "user@example.com",
-    "full_name": null,
-    "profile_image": null
+    "full_name": "نام کامل",
+    "profile_image": null,
+    "is_online": false,
+    "last_seen": null
   }
 }
 ```
@@ -94,7 +97,9 @@ Content-Type: application/json
     "username": "user123",
     "email": "user@example.com",
     "full_name": "نام کامل",
-    "profile_image": "/uploads/images/..."
+    "profile_image": "/uploads/images/...",
+    "is_online": true,
+    "last_seen": "2024-01-01T12:00:00"
   }
 }
 ```
@@ -127,7 +132,9 @@ Authorization: Bearer YOUR_TOKEN
   "username": "user123",
   "email": "user@example.com",
   "full_name": "نام کامل",
-  "profile_image": "/uploads/images/profile.jpg"
+  "profile_image": "/uploads/images/profile.jpg",
+  "is_online": true,
+  "last_seen": "2024-01-01T12:00:00"
 }
 ```
 
@@ -163,7 +170,9 @@ Content-Type: application/json
   "username": "newusername",
   "email": "newemail@example.com",
   "full_name": "نام کامل جدید",
-  "profile_image": "/uploads/images/profile.jpg"
+  "profile_image": "/uploads/images/profile.jpg",
+  "is_online": true,
+  "last_seen": "2024-01-01T12:00:00"
 }
 ```
 
@@ -230,19 +239,58 @@ GET /api/users/search?query=user
     "username": "user123",
     "email": "user@example.com",
     "full_name": "نام کامل",
-    "profile_image": "/uploads/images/..."
-  },
-  {
-    "id": "507f1f77bcf86cd799439012",
-    "username": "user456",
-    "email": "user2@example.com",
-    "full_name": null,
-    "profile_image": null
+    "profile_image": "/uploads/images/...",
+    "is_online": true,
+    "last_seen": "2024-01-01T12:00:00"
   }
 ]
 ```
 
 **نکته:** حداکثر 20 نتیجه برگردانده می‌شود.
+
+---
+
+### 2.5 دریافت وضعیت کاربر (Online/Offline)
+
+**Endpoint:** `GET /api/users/{user_id}/status`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `user_id`: شناسه کاربر
+
+**Response (200 OK):**
+```json
+{
+  "user_id": "507f1f77bcf86cd799439011",
+  "is_online": true,
+  "last_seen": "2024-01-01T12:00:00"
+}
+```
+
+**Error Responses:**
+- `404`: کاربر یافت نشد
+
+---
+
+### 2.6 به‌روزرسانی Last Seen
+
+**Endpoint:** `POST /api/users/me/last-seen`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "updated"
+}
+```
 
 ---
 
@@ -258,11 +306,12 @@ Authorization: Bearer YOUR_TOKEN
 ```
 
 **Query Parameters:**
-- `email` (required): ایمیل کاربری که می‌خواهید با او چت کنید
+- `identifier` (required): ایمیل یا نام کاربری کاربری که می‌خواهید با او چت کنید
 
 **Example:**
 ```
-POST /api/chats/single?email=user@example.com
+POST /api/chats/single?identifier=user@example.com
+POST /api/chats/single?identifier=username123
 ```
 
 **Response (200 OK):**
@@ -274,7 +323,7 @@ POST /api/chats/single?email=user@example.com
 
 **Error Responses:**
 - `400`: نمی‌توانید با خودتان چت ایجاد کنید
-- `404`: کاربر با این ایمیل یافت نشد
+- `404`: کاربر با این ایمیل یا نام کاربری یافت نشد
 
 **نکته:** اگر چت از قبل وجود داشته باشد، همان chat_id برگردانده می‌شود.
 
@@ -287,18 +336,20 @@ POST /api/chats/single?email=user@example.com
 **Headers:**
 ```
 Authorization: Bearer YOUR_TOKEN
-Content-Type: application/json
+Content-Type: multipart/form-data
 ```
 
-**Request Body:**
-```json
-{
-  "name": "گروه دوستان",
-  "participant_emails": [
-    "user1@example.com",
-    "user2@example.com"
-  ]
-}
+**Form Data:**
+- `name` (required): نام گروه
+- `participant_emails` (optional): لیست ایمیل‌ها یا نام‌های کاربری (جدا شده با کاما)
+- `group_image` (optional): تصویر گروه
+
+**Example:**
+```javascript
+const formData = new FormData();
+formData.append('name', 'گروه دوستان');
+formData.append('participant_emails', 'user1@example.com,user2@example.com,username3');
+formData.append('group_image', imageFile); // optional
 ```
 
 **Response (200 OK):**
@@ -308,7 +359,9 @@ Content-Type: application/json
 }
 ```
 
-**نکته:** کاربر فعلی به صورت خودکار به گروه اضافه می‌شود.
+**نکته:** 
+- کاربر فعلی به صورت خودکار به گروه اضافه می‌شود
+- می‌توانید با ایمیل یا نام کاربری اعضا را اضافه کنید
 
 ---
 
@@ -335,38 +388,56 @@ Authorization: Bearer YOUR_TOKEN
         "username": "user123",
         "email": "user@example.com",
         "full_name": "نام کامل",
-        "profile_image": "/uploads/images/..."
+        "profile_image": "/uploads/images/...",
+        "is_online": true,
+        "last_seen": "2024-01-01T12:00:00"
       }
     ],
+    "last_message": {
+      "id": "507f1f77bcf86cd799439030",
+      "content": "آخرین پیام",
+      "message_type": "text",
+      "sender_id": "507f1f77bcf86cd799439011",
+      "sender_name": "نام کامل",
+      "created_at": "2024-01-01T12:00:00"
+    },
+    "unread_count": 5,
     "created_at": "2024-01-01T12:00:00"
   },
   {
     "id": "507f1f77bcf86cd799439021",
     "chat_type": "group",
     "group_name": "گروه دوستان",
-    "group_image": null,
+    "group_image": "/uploads/images/group_123.jpg",
     "participants": [
       {
         "id": "507f1f77bcf86cd799439011",
         "username": "user123",
         "email": "user@example.com",
         "full_name": "نام کامل",
-        "profile_image": "/uploads/images/..."
-      },
-      {
-        "id": "507f1f77bcf86cd799439012",
-        "username": "user456",
-        "email": "user2@example.com",
-        "full_name": null,
-        "profile_image": null
+        "profile_image": "/uploads/images/...",
+        "is_online": true,
+        "last_seen": "2024-01-01T12:00:00"
       }
     ],
+    "last_message": {
+      "id": "507f1f77bcf86cd799439031",
+      "content": "آخرین پیام گروه",
+      "message_type": "text",
+      "sender_id": "507f1f77bcf86cd799439012",
+      "sender_name": "user456",
+      "created_at": "2024-01-01T12:05:00"
+    },
+    "unread_count": 0,
     "created_at": "2024-01-01T12:00:00"
   }
 ]
 ```
 
-**نکته:** فقط چت‌هایی که کاربر در آن‌ها عضو است برگردانده می‌شوند.
+**نکته:** 
+- فقط چت‌هایی که کاربر در آن‌ها عضو است برگردانده می‌شوند
+- چت‌های آرشیو شده نمایش داده نمی‌شوند
+- چت‌ها بر اساس زمان آخرین پیام مرتب می‌شوند (جدیدترین اول)
 
 ---
 
@@ -388,10 +459,12 @@ Content-Type: application/json
 {
   "emails": [
     "user3@example.com",
-    "user4@example.com"
+    "username4"
   ]
 }
 ```
+
+**نکته:** می‌توانید با ایمیل یا نام کاربری اعضا را اضافه کنید.
 
 **Response (200 OK):**
 ```json
@@ -406,9 +479,140 @@ Content-Type: application/json
 
 ---
 
+### 3.5 حذف عضو از گروه
+
+**Endpoint:** `DELETE /api/chats/{chat_id}/participants/{user_id}`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت (گروه)
+- `user_id`: شناسه کاربری که باید حذف شود
+
+**Response (200 OK):**
+```json
+{
+  "status": "removed"
+}
+```
+
+**Error Responses:**
+- `403`: شما ادمین نیستید یا عضو این چت نیستید
+- `404`: چت یا کاربر یافت نشد
+
+---
+
+### 3.6 به‌روزرسانی اطلاعات گروه
+
+**Endpoint:** `PUT /api/chats/{chat_id}/group`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+Content-Type: multipart/form-data
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت (گروه)
+
+**Form Data:**
+- `name` (optional): نام جدید گروه
+- `group_image` (optional): تصویر جدید گروه
+
+**Response (200 OK):**
+```json
+{
+  "id": "507f1f77bcf86cd799439020",
+  "group_name": "نام جدید گروه",
+  "group_image": "/uploads/images/group_new.jpg"
+}
+```
+
+**Error Responses:**
+- `400`: این چت گروه نیست
+- `403`: فقط ادمین‌ها می‌توانند اطلاعات گروه را به‌روزرسانی کنند
+- `404`: چت یافت نشد
+
+---
+
+### 3.7 افزودن ادمین به گروه
+
+**Endpoint:** `POST /api/chats/{chat_id}/admins/{user_id}`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت (گروه)
+- `user_id`: شناسه کاربری که باید ادمین شود
+
+**Response (200 OK):**
+```json
+{
+  "status": "added"
+}
+```
+
+**Error Responses:**
+- `403`: شما ادمین نیستید
+- `404`: چت یا کاربر یافت نشد
+
+---
+
+### 3.8 آرشیو کردن چت
+
+**Endpoint:** `POST /api/chats/{chat_id}/archive`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+
+**Response (200 OK):**
+```json
+{
+  "status": "archived"
+}
+```
+
+---
+
+### 3.9 دریافت چت‌های آرشیو شده
+
+**Endpoint:** `GET /api/chats/archived`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": "507f1f77bcf86cd799439020",
+    "chat_type": "single",
+    "group_name": null,
+    "participants": [...],
+    "last_message": {...},
+    "created_at": "2024-01-01T12:00:00"
+  }
+]
+```
+
+---
+
 ## 4. Message Endpoints
 
-### 4.1 دریافت پیام‌ها
+### 4.1 دریافت پیام‌ها (با Pagination)
 
 **Endpoint:** `GET /api/chats/{chat_id}/messages`
 
@@ -431,33 +635,62 @@ GET /api/chats/507f1f77bcf86cd799439020/messages?limit=50&skip=0
 
 **Response (200 OK):**
 ```json
-[
-  {
-    "id": "507f1f77bcf86cd799439030",
-    "chat_id": "507f1f77bcf86cd799439020",
-    "sender_id": "507f1f77bcf86cd799439011",
-    "sender_name": "نام کامل",
-    "message_type": "text",
-    "content": "سلام، چطوری؟",
-    "file_url": null,
-    "created_at": "2024-01-01T12:00:00"
-  },
-  {
-    "id": "507f1f77bcf86cd799439031",
-    "chat_id": "507f1f77bcf86cd799439020",
-    "sender_id": "507f1f77bcf86cd799439012",
-    "sender_name": "user456",
-    "message_type": "image",
-    "content": "image.jpg",
-    "file_url": "/uploads/images/507f1f77bcf86cd799439020_1234567890.jpg",
-    "created_at": "2024-01-01T12:05:00"
-  }
-]
+{
+  "messages": [
+    {
+      "id": "507f1f77bcf86cd799439030",
+      "chat_id": "507f1f77bcf86cd799439020",
+      "sender_id": "507f1f77bcf86cd799439011",
+      "sender_name": "نام کامل",
+      "message_type": "text",
+      "content": "سلام، چطوری؟",
+      "file_url": null,
+      "reply_to": null,
+      "reply_to_message": null,
+      "edited_at": null,
+      "is_deleted": false,
+      "status": "read",
+      "reactions": {
+        "👍": ["user1_id", "user2_id"],
+        "❤️": ["user3_id"]
+      },
+      "created_at": "2024-01-01T12:00:00"
+    },
+    {
+      "id": "507f1f77bcf86cd799439031",
+      "chat_id": "507f1f77bcf86cd799439020",
+      "sender_id": "507f1f77bcf86cd799439012",
+      "sender_name": "user456",
+      "message_type": "image",
+      "content": "image.jpg",
+      "file_url": "/uploads/images/507f1f77bcf86cd799439020_1234567890.jpg",
+      "reply_to": "507f1f77bcf86cd799439030",
+      "reply_to_message": {
+        "id": "507f1f77bcf86cd799439030",
+        "sender_id": "507f1f77bcf86cd799439011",
+        "sender_name": "نام کامل",
+        "content": "سلام، چطوری؟",
+        "message_type": "text"
+      },
+      "edited_at": null,
+      "is_deleted": false,
+      "status": "delivered",
+      "reactions": {},
+      "created_at": "2024-01-01T12:05:00"
+    }
+  ],
+  "total": 150,
+  "has_more": true,
+  "skip": 0,
+  "limit": 50
+}
 ```
 
 **نکته:** 
 - پیام‌ها به ترتیب زمانی (قدیمی‌ترین به جدیدترین) برگردانده می‌شوند
 - `sender_name`: اگر `full_name` وجود داشته باشد نمایش داده می‌شود، در غیر این صورت `username`
+- `status`: می‌تواند "sent", "delivered", یا "read" باشد
+- `reactions`: یک object که emoji را به لیست user_idها map می‌کند
 
 **Error Responses:**
 - `403`: شما عضو این چت نیستید
@@ -480,10 +713,11 @@ Authorization: Bearer YOUR_TOKEN
 **Query Parameters:**
 - `content` (required): متن پیام
 - `message_type` (optional, default: "text"): نوع پیام
+- `reply_to` (optional): شناسه پیامی که به آن پاسخ می‌دهید
 
 **Example:**
 ```
-POST /api/chats/507f1f77bcf86cd799439020/messages?content=سلام&message_type=text
+POST /api/chats/507f1f77bcf86cd799439020/messages?content=سلام&message_type=text&reply_to=507f1f77bcf86cd799439030
 ```
 
 **Response (200 OK):**
@@ -496,6 +730,18 @@ POST /api/chats/507f1f77bcf86cd799439020/messages?content=سلام&message_type=
   "message_type": "text",
   "content": "سلام",
   "file_url": null,
+  "reply_to": "507f1f77bcf86cd799439030",
+  "reply_to_message": {
+    "id": "507f1f77bcf86cd799439030",
+    "sender_id": "507f1f77bcf86cd799439011",
+    "sender_name": "نام کامل",
+    "content": "پیام قبلی",
+    "message_type": "text"
+  },
+  "edited_at": null,
+  "is_deleted": false,
+  "status": "sent",
+  "reactions": {},
   "created_at": "2024-01-01T12:00:00"
 }
 ```
@@ -537,6 +783,12 @@ file: [file or image]
   "message_type": "image",
   "content": "photo.jpg",
   "file_url": "/uploads/images/507f1f77bcf86cd799439020_1234567890.jpg",
+  "reply_to": null,
+  "reply_to_message": null,
+  "edited_at": null,
+  "is_deleted": false,
+  "status": "sent",
+  "reactions": {},
   "created_at": "2024-01-01T12:00:00"
 }
 ```
@@ -548,27 +800,278 @@ file: [file or image]
 
 ---
 
+### 4.4 ویرایش پیام
+
+**Endpoint:** `PUT /api/chats/{chat_id}/messages/{message_id}`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+Content-Type: application/json
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+- `message_id`: شناسه پیام
+
+**Request Body:**
+```json
+{
+  "content": "متن جدید پیام"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": "507f1f77bcf86cd799439030",
+  "chat_id": "507f1f77bcf86cd799439020",
+  "sender_id": "507f1f77bcf86cd799439011",
+  "sender_name": "نام کامل",
+  "message_type": "text",
+  "content": "متن جدید پیام",
+  "file_url": null,
+  "reply_to": "507f1f77bcf86cd799439029",
+  "reply_to_message": {...},
+  "edited_at": "2024-01-01T12:10:00",
+  "is_deleted": false,
+  "status": "read",
+  "reactions": {},
+  "created_at": "2024-01-01T12:00:00"
+}
+```
+
+**Error Responses:**
+- `403`: شما فرستنده این پیام نیستید یا عضو این چت نیستید
+- `404`: پیام یافت نشد
+
+---
+
+### 4.5 حذف پیام
+
+**Endpoint:** `DELETE /api/chats/{chat_id}/messages/{message_id}`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+- `message_id`: شناسه پیام
+
+**Response (200 OK):**
+```json
+{
+  "status": "deleted"
+}
+```
+
+**Error Responses:**
+- `403`: شما فرستنده این پیام نیستید یا عضو این چت نیستید
+- `404`: پیام یافت نشد
+
+---
+
+### 4.6 علامت‌گذاری پیام به عنوان خوانده شده
+
+**Endpoint:** `POST /api/chats/{chat_id}/messages/{message_id}/read`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+- `message_id`: شناسه پیام
+
+**Response (200 OK):**
+```json
+{
+  "status": "read"
+}
+```
+
+---
+
+### 4.7 علامت‌گذاری همه پیام‌های چت به عنوان خوانده شده
+
+**Endpoint:** `POST /api/chats/{chat_id}/messages/read-all`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+
+**Response (200 OK):**
+```json
+{
+  "status": "success",
+  "updated_count": 15
+}
+```
+
+---
+
+### 4.8 واکنش به پیام (React)
+
+**Endpoint:** `POST /api/chats/{chat_id}/messages/{message_id}/react`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+Content-Type: application/json
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+- `message_id`: شناسه پیام
+
+**Request Body:**
+```json
+{
+  "emoji": "👍"
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "reacted",
+  "reactions": {
+    "👍": ["user1_id", "user2_id"],
+    "❤️": ["user3_id"]
+  }
+}
+```
+
+**نکته:** اگر کاربر قبلاً به این پیام با همین emoji واکنش داده باشد، واکنش حذف می‌شود.
+
+---
+
+### 4.9 فوروارد پیام
+
+**Endpoint:** `POST /api/chats/{chat_id}/messages/{message_id}/forward`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+Content-Type: application/json
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت فعلی
+- `message_id`: شناسه پیامی که می‌خواهید فوروارد کنید
+
+**Request Body:**
+```json
+{
+  "target_chat_ids": [
+    "507f1f77bcf86cd799439021",
+    "507f1f77bcf86cd799439022"
+  ]
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "forwarded",
+  "forwarded_to": 2
+}
+```
+
+---
+
+### 4.10 جستجوی پیام‌ها
+
+**Endpoint:** `GET /api/chats/{chat_id}/messages/search`
+
+**Headers:**
+```
+Authorization: Bearer YOUR_TOKEN
+```
+
+**Path Parameters:**
+- `chat_id`: شناسه چت
+
+**Query Parameters:**
+- `query` (required): متن برای جستجو
+
+**Example:**
+```
+GET /api/chats/507f1f77bcf86cd799439020/messages/search?query=سلام
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": "507f1f77bcf86cd799439030",
+    "chat_id": "507f1f77bcf86cd799439020",
+    "sender_id": "507f1f77bcf86cd799439011",
+    "sender_name": "نام کامل",
+    "message_type": "text",
+    "content": "سلام، چطوری؟",
+    "file_url": null,
+    "created_at": "2024-01-01T12:00:00"
+  }
+]
+```
+
+---
+
 ## 5. WebSocket
 
-### 5.1 اتصال WebSocket
+### 5.1 اتصال WebSocket برای چت
 
 **Endpoint:** `ws://localhost:8009/ws/{chat_id}`
 
 **Path Parameters:**
 - `chat_id`: شناسه چت
 
+**Query Parameters:**
+- `token` (optional): JWT Token برای احراز هویت
+
 **نحوه اتصال:**
 ```javascript
-const ws = new WebSocket('ws://localhost:8009/ws/507f1f77bcf86cd799439020');
+const token = localStorage.getItem('token');
+const ws = new WebSocket(`ws://localhost:8009/ws/507f1f77bcf86cd799439020?token=${token}`);
 
 ws.onopen = () => {
   console.log('Connected to WebSocket');
 };
 
 ws.onmessage = (event) => {
-  const message = JSON.parse(event.data);
-  // Handle new message
-  console.log('New message:', message);
+  const data = JSON.parse(event.data);
+  
+  // Handle different message types
+  if (data.type === 'new_message') {
+    // New message received
+    console.log('New message:', data.message);
+  } else if (data.type === 'message_edited') {
+    // Message was edited
+    console.log('Message edited:', data.message);
+  } else if (data.type === 'message_deleted') {
+    // Message was deleted
+    console.log('Message deleted:', data.message_id);
+  } else if (data.type === 'message_reaction') {
+    // Reaction added/removed
+    console.log('Reaction:', data);
+  } else if (data.type === 'message_status') {
+    // Message status updated (delivered/read)
+    console.log('Status:', data);
+  } else if (data.type === 'typing') {
+    // User is typing
+    console.log('Typing:', data.user_id, data.is_typing);
+  } else if (data.id) {
+    // Direct message object
+    console.log('Message:', data);
+  }
 };
 
 ws.onerror = (error) => {
@@ -580,21 +1083,53 @@ ws.onclose = () => {
 };
 ```
 
-**فرمت پیام دریافتی:**
-```json
-{
-  "id": "507f1f77bcf86cd799439030",
-  "chat_id": "507f1f77bcf86cd799439020",
-  "sender_id": "507f1f77bcf86cd799439011",
-  "sender_name": "نام کامل",
-  "message_type": "text",
-  "content": "سلام",
-  "file_url": null,
-  "created_at": "2024-01-01T12:00:00"
-}
+**ارسال پیام تایپینگ:**
+```javascript
+ws.send(JSON.stringify({
+  type: 'typing',
+  is_typing: true
+}));
 ```
 
-**نکته:** پیام‌های جدید به صورت Real-time از طریق WebSocket به تمام اعضای چت ارسال می‌شوند.
+**ارسال علامت خوانده شده:**
+```javascript
+ws.send(JSON.stringify({
+  type: 'read',
+  message_id: '507f1f77bcf86cd799439030'
+}));
+```
+
+---
+
+### 5.2 اتصال WebSocket برای به‌روزرسانی‌های Global
+
+**Endpoint:** `ws://localhost:8009/ws/global`
+
+**Query Parameters:**
+- `token` (required): JWT Token
+
+**نحوه اتصال:**
+```javascript
+const token = localStorage.getItem('token');
+const ws = new WebSocket(`ws://localhost:8009/ws/global?token=${token}`);
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  
+  if (data.type === 'new_message') {
+    // Update chat list when new message arrives
+    console.log('New message in chat:', data.chat_id);
+  } else if (data.type === 'message_edited') {
+    // Message was edited in a chat
+    console.log('Message edited in chat:', data.chat_id);
+  } else if (data.type === 'message_deleted') {
+    // Message was deleted in a chat
+    console.log('Message deleted in chat:', data.chat_id);
+  }
+};
+```
+
+**نکته:** این WebSocket برای به‌روزرسانی لیست چت‌ها استفاده می‌شود و نیازی به ارسال پیام ندارد.
 
 ---
 
@@ -604,13 +1139,13 @@ ws.onclose = () => {
 
 ```javascript
 // Register
-const register = async (username, email, password) => {
+const register = async (username, email, password, fullName) => {
   const response = await fetch('http://localhost:8009/api/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ username, email, password }),
+    body: JSON.stringify({ username, email, password, full_name: fullName }),
   });
   
   const data = await response.json();
@@ -649,22 +1184,103 @@ const response = await fetch('http://localhost:8009/api/users/me', {
 const user = await response.json();
 ```
 
-### 6.3 ارسال فایل
+### 6.3 ایجاد چت با ایمیل یا نام کاربری
 
 ```javascript
-const sendFile = async (chatId, file) => {
+const createChat = async (identifier) => {
   const token = localStorage.getItem('token');
-  const formData = new FormData();
-  formData.append('file', file);
-  
   const response = await fetch(
-    `http://localhost:8009/api/chats/${chatId}/messages/file`,
+    `http://localhost:8009/api/chats/single?identifier=${encodeURIComponent(identifier)}`,
     {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
       },
-      body: formData,
+    }
+  );
+  return await response.json();
+};
+```
+
+### 6.4 ایجاد گروه با تصویر
+
+```javascript
+const createGroup = async (name, participantEmails, groupImage) => {
+  const token = localStorage.getItem('token');
+  const formData = new FormData();
+  formData.append('name', name);
+  formData.append('participant_emails', participantEmails.join(','));
+  if (groupImage) {
+    formData.append('group_image', groupImage);
+  }
+  
+  const response = await fetch('http://localhost:8009/api/chats/group', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    body: formData,
+  });
+  
+  return await response.json();
+};
+```
+
+### 6.5 ارسال پیام با Reply
+
+```javascript
+const sendMessage = async (chatId, content, replyTo = null) => {
+  const token = localStorage.getItem('token');
+  let url = `http://localhost:8009/api/chats/${chatId}/messages?content=${encodeURIComponent(content)}`;
+  if (replyTo) {
+    url += `&reply_to=${replyTo}`;
+  }
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+  
+  return await response.json();
+};
+```
+
+### 6.6 دریافت پیام‌ها با Pagination
+
+```javascript
+const getMessages = async (chatId, skip = 0, limit = 50) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(
+    `http://localhost:8009/api/chats/${chatId}/messages?skip=${skip}&limit=${limit}`,
+    {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    }
+  );
+  
+  const data = await response.json();
+  return data; // { messages: [], total: 150, has_more: true, skip: 0, limit: 50 }
+};
+```
+
+### 6.7 ویرایش پیام
+
+```javascript
+const editMessage = async (chatId, messageId, newContent) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(
+    `http://localhost:8009/api/chats/${chatId}/messages/${messageId}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ content: newContent }),
     }
   );
   
@@ -672,20 +1288,50 @@ const sendFile = async (chatId, file) => {
 };
 ```
 
-### 6.4 استفاده از WebSocket
+### 6.8 واکنش به پیام
 
 ```javascript
-const connectWebSocket = (chatId, onMessage) => {
-  const ws = new WebSocket(`ws://localhost:8009/ws/${chatId}`);
+const reactToMessage = async (chatId, messageId, emoji) => {
+  const token = localStorage.getItem('token');
+  const response = await fetch(
+    `http://localhost:8009/api/chats/${chatId}/messages/${messageId}/react`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ emoji }),
+    }
+  );
+  
+  return await response.json();
+};
+```
+
+### 6.9 استفاده از WebSocket
+
+```javascript
+const connectWebSocket = (chatId, onMessage, onTyping, onStatusUpdate) => {
+  const token = localStorage.getItem('token');
+  const ws = new WebSocket(`ws://localhost:8009/ws/${chatId}?token=${token}`);
   
   ws.onopen = () => {
     console.log('WebSocket connected');
   };
   
   ws.onmessage = (event) => {
-    const message = JSON.parse(event.data);
-    if (message.id) { // New message
-      onMessage(message);
+    const data = JSON.parse(event.data);
+    
+    if (data.type === 'new_message' && data.message) {
+      onMessage(data.message);
+    } else if (data.type === 'typing') {
+      onTyping(data.user_id, data.is_typing);
+    } else if (data.type === 'message_status') {
+      onStatusUpdate(data.message_id, data.status);
+    } else if (data.id) {
+      // Direct message
+      onMessage(data);
     }
   };
   
@@ -696,7 +1342,34 @@ const connectWebSocket = (chatId, onMessage) => {
   ws.onclose = () => {
     console.log('WebSocket disconnected');
     // Reconnect after 3 seconds
-    setTimeout(() => connectWebSocket(chatId, onMessage), 3000);
+    setTimeout(() => connectWebSocket(chatId, onMessage, onTyping, onStatusUpdate), 3000);
+  };
+  
+  return ws;
+};
+
+// Send typing indicator
+const sendTyping = (ws, isTyping) => {
+  ws.send(JSON.stringify({
+    type: 'typing',
+    is_typing: isTyping
+  }));
+};
+```
+
+### 6.10 اتصال به WebSocket Global
+
+```javascript
+const connectGlobalWebSocket = (onChatUpdate) => {
+  const token = localStorage.getItem('token');
+  const ws = new WebSocket(`ws://localhost:8009/ws/global?token=${token}`);
+  
+  ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    
+    if (data.type === 'new_message' || data.type === 'message_edited' || data.type === 'message_deleted') {
+      onChatUpdate(data);
+    }
   };
   
   return ws;
@@ -733,6 +1406,22 @@ const connectWebSocket = (chatId, onMessage) => {
 
 5. **Pagination**: برای دریافت پیام‌های بیشتر از query parameters `limit` و `skip` استفاده کنید.
 
+6. **Username یا Email**: در ایجاد چت و افزودن اعضا به گروه، می‌توانید از ایمیل یا نام کاربری استفاده کنید.
+
+7. **Message Status**: وضعیت پیام‌ها می‌تواند "sent", "delivered", یا "read" باشد. پیام‌های ارسالی شما به صورت خودکار "sent" هستند و برای سایر کاربران "delivered" می‌شوند.
+
+8. **Reactions**: واکنش‌ها به صورت object ذخیره می‌شوند که emoji را به لیست user_idها map می‌کند:
+   ```json
+   {
+     "👍": ["user1_id", "user2_id"],
+     "❤️": ["user3_id"]
+   }
+   ```
+
+9. **Read Status**: هر پیام یک فیلد `read_by` دارد که لیست user_idهای کاربرانی که پیام را خوانده‌اند را نگه می‌دارد.
+
+10. **Timezone**: تمام زمان‌ها در UTC ذخیره می‌شوند. برای نمایش باید به timezone تهران (Asia/Tehran) تبدیل شوند.
+
 ---
 
 ## 9. Swagger Documentation
@@ -749,3 +1438,24 @@ http://localhost:8009/docs
 http://localhost:8009/redoc
 ```
 
+---
+
+## 10. تغییرات اخیر
+
+### نسخه 1.0.0
+
+- ✅ پشتیبانی از Username در ایجاد چت و افزودن اعضا
+- ✅ Pagination برای پیام‌ها
+- ✅ Reply to Message
+- ✅ Edit/Delete Messages
+- ✅ Message Reactions
+- ✅ Message Status (sent/delivered/read)
+- ✅ Typing Indicators
+- ✅ Online/Offline Status
+- ✅ Group Management (edit name/image, add/remove members, admins)
+- ✅ Message Search
+- ✅ Archive Chats
+- ✅ Forward Messages
+- ✅ Global WebSocket برای به‌روزرسانی لیست چت‌ها
+- ✅ Read Status per User (read_by field)
+- ✅ Last Seen Status

@@ -108,6 +108,14 @@ function Profile() {
             ) : (
               <span>{user?.username?.charAt(0).toUpperCase()}</span>
             )}
+            {user?.is_online && (
+              <div className="online-status-badge profile-online">آنلاین</div>
+            )}
+            {!user?.is_online && user?.last_seen && (
+              <div className="online-status-badge profile-offline">
+                آخرین بازدید: {new Date(user.last_seen).toLocaleString('fa-IR')}
+              </div>
+            )}
           </div>
           <label className="upload-btn">
             تغییر تصویر
@@ -151,6 +159,27 @@ function Profile() {
               value={formData.full_name}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="form-group">
+            <label>وضعیت</label>
+            <div className="status-display">
+              {user?.is_online ? (
+                <span className="status-online">🟢 آنلاین</span>
+              ) : user?.last_seen ? (
+                <span className="status-offline">
+                  ⚫ آفلاین - آخرین بازدید: {new Date(user.last_seen).toLocaleString('fa-IR', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
+              ) : (
+                <span className="status-offline">⚫ آفلاین</span>
+              )}
+            </div>
           </div>
 
           <div className="form-group">

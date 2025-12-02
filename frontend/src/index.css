@@ -5,43 +5,63 @@
 }
 
 :root {
-  /* Light mode colors (Telegram-like) */
-  --bg-primary: #ffffff;
-  --bg-secondary: #f0f2f5;
-  --bg-tertiary: #e4e6eb;
-  --text-primary: #000000;
-  --text-secondary: #707579;
-  --border-color: #e4e6eb;
-  --message-sent: #0088cc;
-  --message-received: #ffffff;
-  --message-sent-text: #ffffff;
-  --message-received-text: #000000;
-  --header-bg: #0088cc;
-  --header-text: #ffffff;
-  --input-bg: #ffffff;
-  --sidebar-bg: #ffffff;
-  --chat-bg: #e5ddd5;
-  --chat-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%23d4d4d4' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
+  /* Telegram Web Light Theme - Exact Colors */
+  --tg-bg-primary: #ffffff;
+  --tg-bg-secondary: #f0f2f5;
+  --tg-bg-tertiary: #e4e6eb;
+  --tg-sidebar-bg: #ffffff;
+  --tg-chat-bg: #e5ddd5;
+  --tg-text-primary: #000000;
+  --tg-text-secondary: #707579;
+  --tg-text-muted: #999999;
+  --tg-border: #e4e6eb;
+  --tg-blue: #3390ec;
+  --tg-blue-hover: #2a7fd4;
+  --tg-message-sent: #3390ec;
+  --tg-message-received: #ffffff;
+  --tg-message-sent-text: #ffffff;
+  --tg-message-received-text: #000000;
+  --tg-header-bg: #3390ec;
+  --tg-header-text: #ffffff;
+  --tg-hover: #f0f2f5;
+  --tg-active: #e4e6eb;
+  --tg-shadow: rgba(0, 0, 0, 0.08);
+  --tg-shadow-hover: rgba(0, 0, 0, 0.12);
+  --tg-input-bg: #ffffff;
+  --tg-search-bg: #f0f2f5;
+  
+  /* Chat background pattern - Telegram Web style */
+  --tg-chat-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%23d4d4d4' stroke-width='0.5' opacity='0.3'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
 }
 
 .dark {
-  /* Dark mode colors (Telegram-like) */
-  --bg-primary: #212121;
-  --bg-secondary: #181818;
-  --bg-tertiary: #2b2b2b;
-  --text-primary: #ffffff;
-  --text-secondary: #a8a8a8;
-  --border-color: #2b2b2b;
-  --message-sent: #3390ec;
-  --message-received: #2b2b2b;
-  --message-sent-text: #ffffff;
-  --message-received-text: #ffffff;
-  --header-bg: #2b2b2b;
-  --header-text: #ffffff;
-  --input-bg: #2b2b2b;
-  --sidebar-bg: #212121;
-  --chat-bg: #0e1621;
-  --chat-bg-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%231a1a1a' stroke-width='0.5'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
+  /* Telegram Web Dark Theme - Exact Colors */
+  --tg-bg-primary: #212121;
+  --tg-bg-secondary: #181818;
+  --tg-bg-tertiary: #2b2b2b;
+  --tg-sidebar-bg: #212121;
+  --tg-chat-bg: #0e1621;
+  --tg-text-primary: #ffffff;
+  --tg-text-secondary: #a8a8a8;
+  --tg-text-muted: #707579;
+  --tg-border: #2b2b2b;
+  --tg-blue: #3390ec;
+  --tg-blue-hover: #2a7fd4;
+  --tg-message-sent: #3390ec;
+  --tg-message-received: #2b2b2b;
+  --tg-message-sent-text: #ffffff;
+  --tg-message-received-text: #ffffff;
+  --tg-header-bg: #2b2b2b;
+  --tg-header-text: #ffffff;
+  --tg-hover: #2b2b2b;
+  --tg-active: #3a3a3a;
+  --tg-shadow: rgba(0, 0, 0, 0.4);
+  --tg-shadow-hover: rgba(0, 0, 0, 0.5);
+  --tg-input-bg: #2b2b2b;
+  --tg-search-bg: #2b2b2b;
+  
+  /* Chat background pattern for dark mode */
+  --tg-chat-pattern: url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='grid' width='20' height='20' patternUnits='userSpaceOnUse'%3E%3Cpath d='M 20 0 L 0 0 0 20' fill='none' stroke='%231a1a1a' stroke-width='0.5' opacity='0.2'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23grid)' /%3E%3C/svg%3E");
 }
 
 body {
@@ -50,13 +70,36 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: var(--tg-bg-secondary);
+  color: var(--tg-text-primary);
   min-height: 100vh;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.4;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+/* Legacy variable names for compatibility */
+:root {
+  --bg-primary: var(--tg-bg-primary);
+  --bg-secondary: var(--tg-bg-secondary);
+  --bg-tertiary: var(--tg-bg-tertiary);
+  --sidebar-bg: var(--tg-sidebar-bg);
+  --chat-bg: var(--tg-chat-bg);
+  --text-primary: var(--tg-text-primary);
+  --text-secondary: var(--tg-text-secondary);
+  --border-color: var(--tg-border);
+  --message-sent: var(--tg-message-sent);
+  --message-received: var(--tg-message-received);
+  --message-sent-text: var(--tg-message-sent-text);
+  --message-received-text: var(--tg-message-received-text);
+  --header-bg: var(--tg-header-bg);
+  --header-text: var(--tg-header-text);
+  --input-bg: var(--tg-bg-primary);
+  --chat-bg-pattern: var(--tg-chat-pattern);
 }

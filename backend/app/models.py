@@ -12,6 +12,8 @@ class User(BaseModel):
     password: str
     full_name: Optional[str] = None
     profile_image: Optional[str] = None
+    is_online: bool = False
+    last_seen: Optional[datetime] = None
     created_at: datetime = datetime.now()
 
 class UserResponse(BaseModel):
@@ -20,6 +22,8 @@ class UserResponse(BaseModel):
     email: EmailStr
     full_name: Optional[str] = None
     profile_image: Optional[str] = None
+    is_online: Optional[bool] = False
+    last_seen: Optional[datetime] = None
 
 class RegisterRequest(BaseModel):
     username: str
@@ -43,6 +47,8 @@ class Chat(BaseModel):
     group_name: Optional[str] = None
     group_image: Optional[str] = None
     created_by: str  # User ID
+    admins: List[str] = []  # List of admin user IDs (for groups)
+    is_archived: bool = False
     created_at: datetime = datetime.now()
 
 class Message(BaseModel):
@@ -52,6 +58,11 @@ class Message(BaseModel):
     message_type: str  # "text", "file", "image"
     content: str
     file_url: Optional[str] = None
+    reply_to: Optional[str] = None  # Message ID that this message replies to
+    edited_at: Optional[datetime] = None
+    is_deleted: bool = False
+    status: str = "sent"  # "sent", "delivered", "read"
+    reactions: dict = {}  # {user_id: emoji}
     created_at: datetime = datetime.now()
 
 class MessageResponse(BaseModel):
@@ -62,6 +73,12 @@ class MessageResponse(BaseModel):
     message_type: str
     content: str
     file_url: Optional[str] = None
+    reply_to: Optional[str] = None
+    reply_to_message: Optional[dict] = None  # Full message object if replying
+    edited_at: Optional[datetime] = None
+    is_deleted: bool = False
+    status: str = "sent"
+    reactions: dict = {}
     created_at: datetime
 
 class CreateGroupRequest(BaseModel):
@@ -73,4 +90,31 @@ class AddParticipantsRequest(BaseModel):
 
 class SearchUserRequest(BaseModel):
     query: str  # email or username
+
+class ReplyMessageRequest(BaseModel):
+    content: str
+    reply_to: str  # Message ID
+
+class EditMessageRequest(BaseModel):
+    content: str
+
+class ReactToMessageRequest(BaseModel):
+    emoji: str  # emoji like "👍", "❤️", etc.
+
+class UpdateGroupRequest(BaseModel):
+    name: Optional[str] = None
+    group_image: Optional[str] = None
+
+class RemoveParticipantRequest(BaseModel):
+    user_id: str
+
+class SearchMessagesRequest(BaseModel):
+    query: str
+    chat_id: Optional[str] = None
+
+class ForwardMessageRequest(BaseModel):
+    chat_ids: List[str]  # List of chat IDs to forward to
+
+class TypingIndicatorRequest(BaseModel):
+    is_typing: bool
 

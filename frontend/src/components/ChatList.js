@@ -37,17 +37,18 @@ function ChatList() {
   }, [location]);
 
   // Reset unread count when chat is selected
-  useEffect(() => {
-    if (selectedChatId) {
-      setChats(prevChats => 
-        prevChats.map(chat => 
-          chat.id === selectedChatId 
-            ? { ...chat, unread_count: 0 }
-            : chat
-        )
-      );
-    }
-  }, [selectedChatId]);
+  // Temporarily disabled - unread count feature is disabled
+  // useEffect(() => {
+  //   if (selectedChatId) {
+  //     setChats(prevChats => 
+  //       prevChats.map(chat => 
+  //         chat.id === selectedChatId 
+  //           ? { ...chat, unread_count: 0 }
+  //           : chat
+  //       )
+  //     );
+  //   }
+  // }, [selectedChatId]);
 
   // WebSocket connection for real-time chat list updates
   useEffect(() => {
@@ -150,16 +151,17 @@ function ChatList() {
       };
 
       // Update unread count if message is not from current user
-      let unreadCount = chat.unread_count || 0;
-      if (msg.sender_id !== user?.id) {
-        // Only increment if not viewing this chat
-        if (selectedChatId !== messageData.chat_id) {
-          unreadCount = (chat.unread_count || 0) + 1;
-        }
-      } else {
-        // If message is from current user, reset unread count
-        unreadCount = 0;
-      }
+      // Temporarily disabled - unread count feature is disabled
+      let unreadCount = 0; // Always set to 0
+      // if (msg.sender_id !== user?.id) {
+      //   // Only increment if not viewing this chat
+      //   if (selectedChatId !== messageData.chat_id) {
+      //     unreadCount = (chat.unread_count || 0) + 1;
+      //   }
+      // } else {
+      //   // If message is from current user, reset unread count
+      //   unreadCount = 0;
+      // }
 
       // Create updated chat object
       const updatedChat = {
@@ -446,7 +448,8 @@ function ChatList() {
                             : '📎 فایل')
                           : (chat.chat_type === 'group' ? 'گروه' : 'چت خصوصی')}
                       </div>
-                      {chat.unread_count > 0 && (
+                      {/* Unread count temporarily disabled */}
+                      {false && chat.unread_count > 0 && (
                         <div className="unread-badge">{chat.unread_count}</div>
                       )}
                     </div>

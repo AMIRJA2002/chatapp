@@ -256,20 +256,18 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
   }, [chatBackground, chatId, globalBackground]);
 
   useEffect(() => {
-    // Mark messages as read when chat is opened
-    if (messages.length > 0 && user?.id) {
-      const unreadMessages = messages.filter(msg => 
-        msg.sender_id !== user.id && msg.status !== 'read'
-      );
-      unreadMessages.forEach(async (msg) => {
+    // Mark all messages as read when chat is opened
+    if (chatId && user?.id && messages.length > 0) {
+      const markAllRead = async () => {
         try {
-          await api.post(`/api/chats/${chatId}/messages/${msg.id}/read`);
+          await api.post(`/api/chats/${chatId}/messages/read-all`);
         } catch (error) {
-          console.error('Error marking message as read:', error);
+          console.error('Error marking messages as read:', error);
         }
-      });
+      };
+      markAllRead();
     }
-  }, [messages.length, chatId, user?.id]);
+  }, [chatId, user?.id]); // Only run when chatId or user changes, not on every message update
 
   useEffect(() => {
     // Close menus when clicking outside

@@ -173,8 +173,13 @@ async def update_message_status(message_id: str, user_id: str, status: str):
     try:
         message = await db.messages.find_one({"_id": ObjectId(message_id)})
         if message:
-            # Update status in message (we can store per-user status if needed)
-            # For now, we'll just broadcast the status update
+            # Update read_by list for read status
+            if status == "read":
+                await db.messages.update_one(
+                    {"_id": ObjectId(message_id)},
+                    {"$addToSet": {"read_by": user_id}}  # Add user_id to read_by list if not exists
+                )
+            # Broadcast the status update
             await manager.broadcast_message_status(
                 message["chat_id"],
                 message_id,
@@ -507,11 +512,15 @@ async def get_user_chats(current_user: User = Depends(get_current_user)):
                 "created_at": last_msg["created_at"]
             }
         
-        # Count unread messages
+        # Count unread messages (messages not sent by user and not read by user)
+        # Use $nin to check if user_id is not in read_by array
         unread_count = await db.messages.count_documents({
             "chat_id": str(chat["_id"]),
             "sender_id": {"$ne": user_id},
-            "status": {"$ne": "read"}
+            "$or": [
+                {"read_by": {"$exists": False}},  # Old messages without read_by field
+                {"read_by": {"$nin": [user_id]}}  # User is not in read_by array
+            ]
         })
         
         chat_list.append({
@@ -714,6 +723,7 @@ async def send_message(
         "is_deleted": False,
         "status": "sent",
         "reactions": {},
+        "read_by": [],  # List of user IDs who have read this message
         "created_at": datetime.now()
     }
     
@@ -796,6 +806,7 @@ async def send_file(
         "is_deleted": False,
         "status": "sent",
         "reactions": {},
+        "read_by": [],  # List of user IDs who have read this message
         "created_at": datetime.now()
     }
     
@@ -904,6 +915,39 @@ async def mark_message_read(
         return {"status": "read"}
     except:
         raise HTTPException(status_code=404, detail="Message not found")
+
+# Mark all messages in a chat as read
+@app.post("/api/chats/{chat_id}/messages/read-all")
+async def mark_all_messages_read(
+    chat_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    db = get_database()
+    try:
+        chat = await db.chats.find_one({"_id": ObjectId(chat_id)})
+        if not chat or str(current_user.id) not in chat["participants"]:
+            raise HTTPException(status_code=403, detail="Not a participant")
+        
+        user_id = str(current_user.id)
+        # Update all messages in this chat that are not sent by the user
+        # Add user_id to read_by array for all unread messages
+        result = await db.messages.update_many(
+            {
+                "chat_id": chat_id,
+                "sender_id": {"$ne": user_id},
+                "$or": [
+                    {"read_by": {"$exists": False}},
+                    {"read_by": {"$nin": [user_id]}}
+                ]
+            },
+            {
+                "$addToSet": {"read_by": user_id}
+            }
+        )
+        
+        return {"status": "success", "updated_count": result.modified_count}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Edit Message
 @app.put("/api/chats/{chat_id}/messages/{message_id}")

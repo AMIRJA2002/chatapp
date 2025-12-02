@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { getBackendUrl } from '../utils/config';
 import './ChatWindow.css';
 
 function ChatWindow() {
@@ -57,7 +58,13 @@ function ChatWindow() {
   const connectWebSocket = () => {
     const token = localStorage.getItem('token');
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:8009/ws/${chatId}`;
+    const backendUrl = getBackendUrl();
+    
+    // If backendUrl is empty (Docker/production), use relative URL
+    // Otherwise use full URL for development
+    const wsUrl = backendUrl 
+      ? `${protocol}//${backendUrl.replace('http://', '').replace('https://', '')}/ws/${chatId}`
+      : `${protocol}//${window.location.host}/ws/${chatId}`;
     
     const websocket = new WebSocket(wsUrl);
     
@@ -168,14 +175,14 @@ function ChatWindow() {
               )}
               {message.message_type === 'image' && (
                 <img
-                  src={`http://localhost:8009${message.file_url}`}
+                  src={`${getBackendUrl()}${message.file_url}`}
                   alt={message.content}
                   className="message-image"
                 />
               )}
               {message.message_type === 'file' && (
                 <a
-                  href={`http://localhost:8009${message.file_url}`}
+                  href={`${getBackendUrl()}${message.file_url}`}
                   download
                   className="message-file"
                 >

@@ -1,4 +1,4 @@
-from passlib.context import CryptContext
+import bcrypt
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 import os
@@ -6,28 +6,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key")
 ALGORITHM = os.getenv("ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
-def verify_password(plain_password, hashed_password):
-    # bcrypt has a limit of 72 bytes, so we truncate if necessary
-    if isinstance(plain_password, str):
-        password_bytes = plain_password.encode('utf-8')
-        if len(password_bytes) > 72:
-            # Truncate to 72 bytes (same as in get_password_hash)
-            plain_password = password_bytes[:72].decode('utf-8', errors='ignore')
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    # bcrypt has a limit of 72 bytes, so we truncate if necessary
+def _truncate_password(password):
+    """Truncate password to 72 bytes for bcrypt compatibility"""
     if isinstance(password, str):
         password_bytes = password.encode('utf-8')
         if len(password_bytes) > 72:
-            # Truncate to 72 bytes
-            password = password_bytes[:72].decode('utf-8', errors='ignore')
-    return pwd_context.hash(password)
+            password_bytes = password_bytes[:72]
+        return password_bytes
+    return password
+
+def verify_password(plain_password, hashed_password):
+    """Verify a password against a hash"""
+    password_bytes = _truncate_password(plain_password)
+    if isinstance(hashed_password, str):
+        hashed_password = hashed_password.encode('utf-8')
+    return bcrypt.checkpw(password_bytes, hashed_password)
+
+def get_password_hash(password):
+    """Hash a password using bcrypt"""
+    password_bytes = _truncate_password(password)
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password_bytes, salt)
+    return hashed.decode('utf-8')
 
 def create_access_token(data: dict):
     to_encode = data.copy()

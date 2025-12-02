@@ -98,7 +98,7 @@ function ChatList() {
           <div className="user-info">
             <div className="user-avatar">
               {user?.profile_image ? (
-                <img src={`http://localhost:8000${user.profile_image}`} alt="Profile" />
+                <img src={`http://localhost:8009${user.profile_image}`} alt="Profile" />
               ) : (
                 <span>{user?.username?.charAt(0).toUpperCase()}</span>
               )}
@@ -138,7 +138,7 @@ function ChatList() {
                 <div className="chat-avatar">
                   {getChatImage(chat) ? (
                     <img
-                      src={`http://localhost:8000${getChatImage(chat)}`}
+                      src={`http://localhost:8009${getChatImage(chat)}`}
                       alt={getChatName(chat)}
                     />
                   ) : (

@@ -5,7 +5,7 @@
 ## Base URL
 
 ```
-http://localhost:8000
+http://localhost:8009
 ```
 
 ## Authentication
@@ -552,14 +552,14 @@ file: [file or image]
 
 ### 5.1 اتصال WebSocket
 
-**Endpoint:** `ws://localhost:8000/ws/{chat_id}`
+**Endpoint:** `ws://localhost:8009/ws/{chat_id}`
 
 **Path Parameters:**
 - `chat_id`: شناسه چت
 
 **نحوه اتصال:**
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/507f1f77bcf86cd799439020');
+const ws = new WebSocket('ws://localhost:8009/ws/507f1f77bcf86cd799439020');
 
 ws.onopen = () => {
   console.log('Connected to WebSocket');
@@ -605,7 +605,7 @@ ws.onclose = () => {
 ```javascript
 // Register
 const register = async (username, email, password) => {
-  const response = await fetch('http://localhost:8000/api/auth/register', {
+  const response = await fetch('http://localhost:8009/api/auth/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -620,7 +620,7 @@ const register = async (username, email, password) => {
 
 // Login
 const login = async (email, password) => {
-  const response = await fetch('http://localhost:8000/api/auth/login', {
+  const response = await fetch('http://localhost:8009/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -639,7 +639,7 @@ const login = async (email, password) => {
 ```javascript
 const token = localStorage.getItem('token');
 
-const response = await fetch('http://localhost:8000/api/users/me', {
+const response = await fetch('http://localhost:8009/api/users/me', {
   method: 'GET',
   headers: {
     'Authorization': `Bearer ${token}`,
@@ -658,7 +658,7 @@ const sendFile = async (chatId, file) => {
   formData.append('file', file);
   
   const response = await fetch(
-    `http://localhost:8000/api/chats/${chatId}/messages/file`,
+    `http://localhost:8009/api/chats/${chatId}/messages/file`,
     {
       method: 'POST',
       headers: {
@@ -676,7 +676,7 @@ const sendFile = async (chatId, file) => {
 
 ```javascript
 const connectWebSocket = (chatId, onMessage) => {
-  const ws = new WebSocket(`ws://localhost:8000/ws/${chatId}`);
+  const ws = new WebSocket(`ws://localhost:8009/ws/${chatId}`);
   
   ws.onopen = () => {
     console.log('WebSocket connected');
@@ -724,7 +724,7 @@ const connectWebSocket = (chatId, onMessage) => {
 
 2. **File URLs**: URL فایل‌های آپلود شده به صورت نسبی هستند و باید با Base URL ترکیب شوند:
    ```javascript
-   const fullUrl = `http://localhost:8000${fileUrl}`;
+   const fullUrl = `http://localhost:8009${fileUrl}`;
    ```
 
 3. **Sender Name**: در پیام‌ها، اگر `full_name` وجود داشته باشد نمایش داده می‌شود، در غیر این صورت `username` نمایش داده می‌شود.
@@ -740,12 +740,12 @@ const connectWebSocket = (chatId, onMessage) => {
 برای مشاهده مستندات تعاملی API، به آدرس زیر بروید:
 
 ```
-http://localhost:8000/docs
+http://localhost:8009/docs
 ```
 
 یا برای مستندات ReDoc:
 
 ```
-http://localhost:8000/redoc
+http://localhost:8009/redoc
 ```
 

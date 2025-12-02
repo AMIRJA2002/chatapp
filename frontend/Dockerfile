@@ -3,7 +3,7 @@ FROM node:18-alpine
 WORKDIR /app
 
 # تنظیم npm registry برای حل مشکل اینترنت
-RUN npm config set registry https://registry.npm.ir/ && \
+RUN npm config set registry https://registry.npmjs.org/ && \
     npm config set strict-ssl false && \
     npm config set fetch-retries 5 && \
     npm config set fetch-retry-mintimeout 20000 && \

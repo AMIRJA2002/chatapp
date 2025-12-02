@@ -47,9 +47,9 @@ docker-compose up --build
 ```
 
 سپس:
-- Backend: http://localhost:8000
+- Backend: http://localhost:8009
 - Frontend: http://localhost:3000
-- API Docs: http://localhost:8000/docs
+- API Docs: http://localhost:8009/docs
 
 ### بدون Docker
 
@@ -271,7 +271,7 @@ file: [file or image, max 10MB]
 ### WebSocket
 
 ```javascript
-const ws = new WebSocket('ws://localhost:8000/ws/{chat_id}');
+const ws = new WebSocket('ws://localhost:8009/ws/{chat_id}');
 
 ws.onmessage = (event) => {
   const message = JSON.parse(event.data);

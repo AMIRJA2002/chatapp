@@ -15,13 +15,13 @@ docker-compose up --build
 
 این دستور:
 - MongoDB را راه‌اندازی می‌کند (پورت 27017)
-- Backend را راه‌اندازی می‌کند (پورت 8000)
+- Backend را راه‌اندازی می‌کند (پورت 8009)
 - Frontend را راه‌اندازی می‌کند (پورت 3000)
 
 ### 3. دسترسی به اپلیکیشن
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
+- **Backend API**: http://localhost:8009
+- **API Documentation**: http://localhost:8009/docs
 - **MongoDB**: localhost:27017
 
 ---
@@ -126,7 +126,7 @@ chatapp/
 
 ### مشکل: Frontend به Backend متصل نمی‌شود
 **راه حل:**
-- مطمئن شوید Backend روی پورت 8000 در حال اجرا است
+- مطمئن شوید Backend روی پورت 8009 در حال اجرا است
 - در `frontend/src/services/api.js` آدرس Backend را بررسی کنید
 
 ### مشکل: فایل‌ها آپلود نمی‌شوند
@@ -171,5 +171,5 @@ user = await strategy.authenticate(otp_data)
 
 برای سوالات و مشکلات:
 - مستندات API را در `API_DOCUMENTATION.md` مطالعه کنید
-- Swagger UI را در http://localhost:8000/docs بررسی کنید
+- Swagger UI را در http://localhost:8009/docs بررسی کنید
 

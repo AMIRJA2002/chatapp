@@ -101,7 +101,7 @@ function Profile() {
           <div className="profile-avatar-large">
             {user?.profile_image ? (
               <img
-                src={`http://localhost:8000${user.profile_image}`}
+                src={`http://localhost:8009${user.profile_image}`}
                 alt="Profile"
               />
             ) : (

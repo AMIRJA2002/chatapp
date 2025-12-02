@@ -57,7 +57,7 @@ function ChatWindow() {
   const connectWebSocket = () => {
     const token = localStorage.getItem('token');
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = `${protocol}//${window.location.hostname}:8000/ws/${chatId}`;
+    const wsUrl = `${protocol}//${window.location.hostname}:8009/ws/${chatId}`;
     
     const websocket = new WebSocket(wsUrl);
     
@@ -168,14 +168,14 @@ function ChatWindow() {
               )}
               {message.message_type === 'image' && (
                 <img
-                  src={`http://localhost:8000${message.file_url}`}
+                  src={`http://localhost:8009${message.file_url}`}
                   alt={message.content}
                   className="message-image"
                 />
               )}
               {message.message_type === 'file' && (
                 <a
-                  href={`http://localhost:8000${message.file_url}`}
+                  href={`http://localhost:8009${message.file_url}`}
                   download
                   className="message-file"
                 >

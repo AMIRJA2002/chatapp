@@ -709,9 +709,15 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
   const formatTime = (dateString) => {
     if (!dateString) return '';
     const date = new Date(dateString);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
+    // Convert to Tehran timezone (UTC+3:30)
+    const options = {
+      timeZone: 'Asia/Tehran',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    };
+    const timeString = date.toLocaleTimeString('en-US', options);
+    return timeString;
   };
 
   const getChatTitle = () => {
@@ -1354,7 +1360,9 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
                     <span className="status-online">🟢 آنلاین</span>
                   ) : profilePreview.last_seen ? (
                     <span className="status-offline">
-                      آخرین بازدید: {new Date(profilePreview.last_seen).toLocaleString('fa-IR')}
+                      آخرین بازدید: {new Date(profilePreview.last_seen).toLocaleString('fa-IR', {
+                        timeZone: 'Asia/Tehran'
+                      })}
                     </span>
                   ) : (
                     <span className="status-offline">آفلاین</span>

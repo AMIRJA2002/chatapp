@@ -113,7 +113,9 @@ function Profile() {
             )}
             {!user?.is_online && user?.last_seen && (
               <div className="online-status-badge profile-offline">
-                آخرین بازدید: {new Date(user.last_seen).toLocaleString('fa-IR')}
+                آخرین بازدید: {new Date(user.last_seen).toLocaleString('fa-IR', {
+                  timeZone: 'Asia/Tehran'
+                })}
               </div>
             )}
           </div>
@@ -169,6 +171,7 @@ function Profile() {
               ) : user?.last_seen ? (
                 <span className="status-offline">
                   ⚫ آفلاین - آخرین بازدید: {new Date(user.last_seen).toLocaleString('fa-IR', {
+                    timeZone: 'Asia/Tehran',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric',

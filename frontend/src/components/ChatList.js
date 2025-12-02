@@ -432,6 +432,7 @@ function ChatList() {
                       {chat.last_message && (
                         <div className="chat-time">
                           {new Date(chat.last_message.created_at).toLocaleTimeString('fa-IR', {
+                            timeZone: 'Asia/Tehran',
                             hour: '2-digit',
                             minute: '2-digit'
                           })}

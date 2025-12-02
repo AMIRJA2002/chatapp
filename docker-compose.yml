@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: chatapp-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: chatapp
+    networks:
+      - chatapp-network
+
+  backend:
+    build: ./backend
+    container_name: chatapp-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - ./backend/uploads:/app/uploads
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DATABASE_NAME=chatapp
+      - SECRET_KEY=your-secret-key-change-in-production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    depends_on:
+      - mongodb
+    networks:
+      - chatapp-network
+
+  frontend:
+    build: ./frontend
+    container_name: chatapp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - chatapp-network
+
+volumes:
+  mongodb_data:
+
+networks:
+  chatapp-network:
+    driver: bridge
+

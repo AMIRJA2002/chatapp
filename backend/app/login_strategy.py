@@ -19,6 +19,7 @@ class EmailPasswordLoginStrategy(LoginStrategy):
         if not verify_password(login_data.password, user["password"]):
             raise ValueError("Invalid email or password")
         
+        user["id"] = str(user["_id"])
         return User(**user)
 
 class LoginFactory:

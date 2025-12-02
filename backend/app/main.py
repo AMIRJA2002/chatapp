@@ -55,7 +55,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     if not user:
         raise HTTPException(status_code=401, detail="User not found")
     
-    user["id"] = user["_id"]
+    user["id"] = str(user["_id"])
     return User(**user)
 
 # WebSocket connections manager
@@ -122,7 +122,7 @@ async def register(user_data: RegisterRequest):
             email=user_dict["email"],
             full_name=user_dict["full_name"],
             profile_image=user_dict["profile_image"]
-        ).dict()
+        ).model_dump()
     }
 
 @app.post("/api/auth/login", response_model=dict)
@@ -141,7 +141,7 @@ async def login(login_data: LoginRequest):
                 email=user.email,
                 full_name=user.full_name,
                 profile_image=user.profile_image
-            ).dict()
+            ).model_dump()
         }
     except ValueError as e:
         raise HTTPException(status_code=401, detail=str(e))

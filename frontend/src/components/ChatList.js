@@ -195,7 +195,7 @@ function ChatList() {
     e.preventDefault();
     try {
       const response = await api.post('/api/chats/single', null, {
-        params: { email },
+        params: { identifier: email },  // Can be email or username
       });
       setEmail('');
       setShowNewChat(false);
@@ -550,10 +550,10 @@ function ChatList() {
             <h2>چت جدید</h2>
             <form onSubmit={createSingleChat}>
               <input
-                type="email"
+                type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="ایمیل کاربر"
+                placeholder="ایمیل یا نام کاربری"
                 required
               />
               <div className="modal-actions">
@@ -625,10 +625,10 @@ function ChatList() {
                 {groupEmails.map((email, index) => (
                   <input
                     key={index}
-                    type="email"
+                    type="text"
                     value={email}
                     onChange={(e) => updateEmail(index, e.target.value)}
-                    placeholder="ایمیل عضو"
+                    placeholder="ایمیل یا نام کاربری عضو"
                   />
                 ))}
                 <button
@@ -636,7 +636,7 @@ function ChatList() {
                   onClick={addEmailField}
                   className="add-email-btn"
                 >
-                  + افزودن ایمیل
+                  + افزودن عضو
                 </button>
               </div>
               <div className="modal-actions">

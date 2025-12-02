@@ -378,13 +378,18 @@ async def search_users(query: str, current_user: User = Depends(get_current_user
 # Chat endpoints
 @app.post("/api/chats/single")
 async def create_single_chat(
-    email: str,
+    identifier: str,  # Can be email or username
     current_user: User = Depends(get_current_user)
 ):
     db = get_database()
     
-    # Find user by email
-    other_user = await db.users.find_one({"email": email})
+    # Find user by email or username
+    other_user = await db.users.find_one({
+        "$or": [
+            {"email": identifier},
+            {"username": identifier}
+        ]
+    })
     if not other_user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -425,13 +430,18 @@ async def create_group(
 ):
     db = get_database()
     
-    # Parse participant emails
-    emails_list = [e.strip() for e in participant_emails.split(",") if e.strip()]
+    # Parse participant identifiers (can be email or username)
+    identifiers_list = [e.strip() for e in participant_emails.split(",") if e.strip()]
     
-    # Find participants by email
+    # Find participants by email or username
     participant_ids = [str(current_user.id)]
-    for email in emails_list:
-        user = await db.users.find_one({"email": email})
+    for identifier in identifiers_list:
+        user = await db.users.find_one({
+            "$or": [
+                {"email": identifier},
+                {"username": identifier}
+            ]
+        })
         if user:
             participant_ids.append(str(user["_id"]))
     
@@ -561,8 +571,13 @@ async def add_participants(
         raise HTTPException(status_code=403, detail="Not a participant")
     
     new_participants = []
-    for email in participants_data.emails:
-        user = await db.users.find_one({"email": email})
+    for identifier in participants_data.emails:  # Can be email or username
+        user = await db.users.find_one({
+            "$or": [
+                {"email": identifier},
+                {"username": identifier}
+            ]
+        })
         if user and str(user["_id"]) not in chat["participants"]:
             new_participants.append(str(user["_id"]))
     

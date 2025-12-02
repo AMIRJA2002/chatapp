@@ -850,6 +850,13 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
             src={`${getBackendUrl()}${getChatAvatar()}`} 
             alt="Avatar" 
             className="chat-header-avatar"
+            onClick={() => {
+              // Show profile preview for single chat
+              if (chatInfo?.chat_type === 'single' && chatInfo?.participants && chatInfo.participants.length > 0) {
+                setProfilePreview(chatInfo.participants[0]);
+              }
+            }}
+            style={{ cursor: chatInfo?.chat_type === 'single' ? 'pointer' : 'default' }}
             onError={(e) => {
               e.target.style.display = 'none';
             }}
@@ -1616,10 +1623,10 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
           <h2>افزودن عضو جدید</h2>
           <form onSubmit={addMemberToGroup}>
             <input
-              type="email"
+              type="text"
               value={newMemberEmail}
               onChange={(e) => setNewMemberEmail(e.target.value)}
-              placeholder="ایمیل کاربر"
+              placeholder="ایمیل یا نام کاربری عضو"
               required
             />
             <div className="modal-actions">

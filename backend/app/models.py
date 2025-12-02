@@ -86,7 +86,7 @@ class CreateGroupRequest(BaseModel):
     participant_emails: List[EmailStr] = []
 
 class AddParticipantsRequest(BaseModel):
-    emails: List[EmailStr] = []
+    emails: List[str] = []  # Can be email or username
 
 class SearchUserRequest(BaseModel):
     query: str  # email or username

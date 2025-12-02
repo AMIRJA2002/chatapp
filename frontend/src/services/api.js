@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getBackendUrl } from '../utils/config';
 
 const api = axios.create({
-  baseURL: getBackendUrl() || '/api',
+  baseURL: getBackendUrl(),
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

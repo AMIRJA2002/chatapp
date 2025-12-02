@@ -17,7 +17,8 @@ export const getBackendUrl = () => {
     }
   }
   
-  // For Docker/production, use same origin (nginx will proxy)
+  // For Docker/production, use empty string (relative path)
+  // API calls already include /api prefix, nginx will proxy /api/* to backend
   return '';
 };
 

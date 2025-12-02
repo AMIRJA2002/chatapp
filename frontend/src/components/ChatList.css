@@ -466,9 +466,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10000;
   backdrop-filter: blur(4px);
   animation: fadeIn 0.2s ease;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 @keyframes fadeIn {
@@ -490,6 +492,11 @@
   animation: slideUp 0.3s ease;
   max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  margin: 20px;
+  box-sizing: border-box;
+  z-index: 10001;
+  -webkit-overflow-scrolling: touch;
 }
 
 @keyframes slideUp {
@@ -890,6 +897,15 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
   }
   
+  /* Ensure modals are above sidebar */
+  .modal-overlay {
+    z-index: 10000 !important;
+  }
+  
+  .modal {
+    z-index: 10001 !important;
+  }
+  
   .telegram-sidebar.mobile-visible {
     transform: translateX(0);
   }
@@ -1158,5 +1174,78 @@
     width: 12px;
     height: 12px;
     border-width: 1.5px;
+  }
+
+  /* Modal fixes for mobile */
+  .modal-overlay {
+    padding: 10px;
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+
+  .modal {
+    width: calc(100% - 20px);
+    max-width: calc(100% - 20px);
+    margin: 0;
+    padding: 20px;
+    max-height: calc(100vh - 40px);
+    border-radius: 12px;
+  }
+
+  .settings-modal {
+    max-width: calc(100% - 20px);
+    width: calc(100% - 20px);
+  }
+
+  .modal h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-actions .btn-primary,
+  .modal-actions .btn-secondary {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .settings-item {
+    padding: 12px 0;
+    flex-wrap: wrap;
+  }
+
+  .settings-item button {
+    width: 100%;
+    margin-top: 8px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 5px;
+    padding-top: 10px;
+  }
+
+  .modal {
+    width: calc(100% - 10px);
+    max-width: calc(100% - 10px);
+    padding: 16px;
+    max-height: calc(100vh - 20px);
+    border-radius: 10px;
+  }
+
+  .settings-modal {
+    max-width: calc(100% - 10px);
+    width: calc(100% - 10px);
+  }
+
+  .modal h2 {
+    font-size: 18px;
+    margin-bottom: 16px;
   }
 }

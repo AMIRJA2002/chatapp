@@ -1,0 +1,248 @@
+/* Mobile-specific styles for ChatList - Complete redesign */
+
+.mobile-view.telegram-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.mobile-view .telegram-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  max-width: 100%;
+  z-index: 1000;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: none;
+  border-right: none;
+}
+
+.mobile-view .telegram-sidebar.mobile-visible {
+  transform: translateX(0);
+}
+
+.mobile-view .telegram-sidebar.mobile-hidden {
+  transform: translateX(-100%);
+}
+
+.mobile-view .mobile-sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.mobile-view .telegram-main {
+  width: 100%;
+  height: 100vh;
+  position: relative;
+}
+
+.mobile-view .sidebar-user-header {
+  padding: 16px 20px;
+  min-height: 64px;
+  background: var(--tg-sidebar-bg);
+  border-bottom: 1px solid var(--tg-border);
+}
+
+.mobile-view .user-avatar-large {
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+}
+
+.mobile-view .user-name-large {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.mobile-view .chats-list {
+  padding: 0;
+  height: calc(100vh - 64px - 60px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-view .chat-item {
+  padding: 16px 20px;
+  gap: 14px;
+  border-bottom: 1px solid var(--tg-border);
+  min-height: 76px;
+}
+
+.mobile-view .chat-avatar {
+  width: 56px;
+  height: 56px;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.mobile-view .chat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.mobile-view .chat-name {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.mobile-view .chat-preview {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-view .chat-time {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.mobile-view .mobile-menu-toggle {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  width: 48px;
+  height: 48px;
+  min-width: 48px;
+  min-height: 48px;
+  z-index: 1001;
+  background: var(--tg-bg-primary);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-view .hamburger-menu-dropdown {
+  position: fixed;
+  top: 72px;
+  left: 16px;
+  min-width: 240px;
+  z-index: 1002;
+  background: var(--tg-bg-primary);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  padding: 8px 0;
+}
+
+.mobile-view .menu-item {
+  padding: 16px 24px;
+  font-size: 16px;
+  gap: 16px;
+}
+
+.mobile-view .menu-icon {
+  font-size: 22px;
+  width: 32px;
+}
+
+.mobile-view .modal-overlay {
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  z-index: 100000 !important;
+}
+
+.mobile-view .modal {
+  width: calc(100% - 32px);
+  max-width: 400px;
+  margin: 0;
+  padding: 24px;
+  max-height: calc(100vh - 40px);
+  border-radius: 16px;
+  z-index: 100001 !important;
+}
+
+.mobile-view .settings-modal {
+  width: calc(100% - 32px);
+  max-width: 400px;
+}
+
+.mobile-view .modal h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.mobile-view .modal input {
+  padding: 14px 18px;
+  font-size: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.mobile-view .modal-actions {
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.mobile-view .modal-actions .btn-primary,
+.mobile-view .modal-actions .btn-secondary {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border-radius: 12px;
+}
+
+.mobile-view .settings-item {
+  padding: 16px 0;
+  font-size: 16px;
+}
+
+.mobile-view .settings-item button {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border-radius: 10px;
+  margin-top: 12px;
+}
+
+.mobile-view .sidebar-search {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--tg-border);
+}
+
+.mobile-view .search-input {
+  padding: 12px 16px 12px 44px;
+  font-size: 16px;
+  border-radius: 24px;
+}
+
+.mobile-view .search-icon {
+  right: 28px;
+  font-size: 18px;
+}
+
+.mobile-view .empty-chat-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.mobile-view .empty-chat-message {
+  font-size: 16px;
+  text-align: center;
+  color: var(--tg-text-secondary);
+}
+

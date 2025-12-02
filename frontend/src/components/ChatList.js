@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useMobile } from '../hooks/useMobile';
 import api from '../services/api';
 import { getBackendUrl } from '../utils/config';
 import ChatWindow from './ChatWindow';
 import './ChatList.css';
+import './ChatList.mobile.css';
 
 function ChatList() {
   const [chats, setChats] = useState([]);
@@ -24,6 +26,7 @@ function ChatList() {
   const [ws, setWs] = useState(null);
   const { user, logout } = useAuth();
   const { darkMode, toggleDarkMode } = useTheme();
+  const isMobile = useMobile();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -295,7 +298,7 @@ function ChatList() {
   };
 
   return (
-    <div className="telegram-container">
+    <div className={`telegram-container ${isMobile ? 'mobile-view' : ''}`}>
       {/* Mobile Sidebar Overlay */}
       {showSidebar && (
         <div className="mobile-sidebar-overlay" onClick={() => setShowSidebar(false)}></div>

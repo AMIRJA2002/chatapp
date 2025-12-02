@@ -3,16 +3,19 @@ import { createPortal } from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useMobile } from '../hooks/useMobile';
 import api from '../services/api';
 import { getBackendUrl } from '../utils/config';
 import EmojiPicker from 'emoji-picker-react';
 import './ChatWindow.css';
+import './ChatWindow.mobile.css';
 
 function ChatWindow({ chatId: propChatId, onBackClick }) {
   const { chatId: paramChatId } = useParams();
   const chatId = propChatId || paramChatId;
   const { user } = useAuth();
   const { darkMode } = useTheme();
+  const isMobile = useMobile();
   const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
@@ -833,7 +836,7 @@ function ChatWindow({ chatId: propChatId, onBackClick }) {
 
   return (
     <div 
-      className={`chat-window-container ${chatBackground ? 'has-custom-bg' : ''}`}
+      className={`chat-window-container ${chatBackground ? 'has-custom-bg' : ''} ${isMobile ? 'mobile-view' : ''}`}
       style={chatBackground ? { backgroundImage: `url(${chatBackground})` } : {}}
     >
       {chatBackground && <div className="chat-background-overlay" style={{ backgroundImage: `url(${chatBackground})` }} />}

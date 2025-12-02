@@ -829,59 +829,173 @@
   }
 }
 
-@media (max-width: 480px) {
+/* Samsung A54 and similar phones (1080x2400, 6.4") */
+@media (max-width: 480px) and (max-height: 2400px) {
   .message-content {
-    max-width: 75%;
-    padding: 8px 10px 10px;
+    max-width: 78%;
+    padding: 10px 14px 12px;
   }
   
   .messages-container {
-    padding: 10px 12px;
-    gap: 5px;
-    height: calc(100vh - 56px - 60px);
+    padding: 16px 14px;
+    gap: 8px;
+    height: calc(100vh - 60px - 70px);
   }
   
   .message-input-container {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 12px 14px;
+    gap: 10px;
+    min-height: 70px;
   }
   
   .message-input {
-    padding: 9px 14px;
+    padding: 12px 16px;
     font-size: 16px;
+    min-height: 46px;
   }
   
   .chat-header {
-    padding: 8px 10px;
-    min-height: 52px;
+    padding: 12px 14px;
+    min-height: 60px;
+    gap: 10px;
   }
   
   .chat-header-avatar {
-    width: 36px;
-    height: 36px;
+    width: 42px;
+    height: 42px;
   }
   
   .chat-title {
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
   }
   
   .file-btn,
   .emoji-btn,
   .send-btn {
-    min-width: 36px;
-    min-height: 36px;
+    min-width: 46px;
+    min-height: 46px;
+    width: 46px;
+    height: 46px;
+  }
+  
+  .file-btn svg,
+  .emoji-btn svg,
+  .send-btn svg {
+    width: 22px;
+    height: 22px;
   }
   
   .emoji-picker-container {
-    width: calc(100vw - 16px);
-    max-width: calc(100vw - 16px);
-    bottom: 75px;
-    left: 8px;
-    right: 8px;
+    width: calc(100vw - 20px);
+    max-width: calc(100vw - 20px);
+    bottom: 85px;
+    left: 10px;
+    right: 10px;
+    height: 380px;
   }
   
   .message-text {
-    font-size: 14.5px;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  
+  .message-time {
+    font-size: 11px;
+    margin-top: 4px;
+  }
+  
+  .message-sender-name {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  
+  .mobile-back-btn {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .header-btn {
+    min-width: 44px;
+    min-height: 44px;
+    width: 44px;
+    height: 44px;
+  }
+  
+  .reply-preview {
+    padding: 10px 14px;
+    margin-bottom: 8px;
+  }
+  
+  .reply-preview-text {
+    font-size: 13px;
+  }
+  
+  .edit-preview {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+  
+  .scroll-to-bottom-btn {
+    width: 48px;
+    height: 48px;
+    bottom: 90px;
+    right: 16px;
+  }
+  
+  .scroll-to-bottom-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Extra optimizations for tall screens like Samsung A54 */
+@media (max-width: 480px) and (min-height: 2000px) {
+  .messages-container {
+    padding: 20px 16px;
+    gap: 10px;
+  }
+  
+  .message-content {
+    padding: 12px 16px 14px;
+    font-size: 15.5px;
+    line-height: 1.6;
+  }
+  
+  .message-input-container {
+    padding: 14px 16px;
+    min-height: 75px;
+  }
+  
+  .message-input {
+    padding: 14px 18px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  
+  .chat-header {
+    padding: 14px 16px;
+    min-height: 64px;
+  }
+  
+  .chat-header-avatar {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .chat-title {
+    font-size: 17px;
+  }
+  
+  .file-btn,
+  .emoji-btn,
+  .send-btn {
+    min-width: 48px;
+    min-height: 48px;
+    width: 48px;
+    height: 48px;
   }
 }
 

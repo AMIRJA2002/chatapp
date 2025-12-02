@@ -1266,4 +1266,108 @@
     font-size: 18px;
     margin-bottom: 16px;
   }
+
+  /* Optimize for Samsung A54 screen */
+  .sidebar-user-header {
+    padding: 14px 16px;
+    min-height: 60px;
+  }
+
+  .user-avatar-large {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .user-name-large {
+    font-size: 15px;
+  }
+
+  .chat-item {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .chat-avatar {
+    width: 52px;
+    height: 52px;
+    font-size: 20px;
+  }
+
+  .chat-name {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .chat-preview {
+    font-size: 13px;
+    margin-top: 2px;
+  }
+
+  .chat-time {
+    font-size: 11px;
+  }
+
+  .mobile-menu-toggle {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .hamburger-menu-dropdown {
+    min-width: 220px;
+    padding: 8px 0;
+  }
+
+  .menu-item {
+    padding: 14px 20px;
+    font-size: 15px;
+  }
+
+  .menu-icon {
+    font-size: 20px;
+    width: 28px;
+  }
+}
+
+/* Extra optimizations for tall screens like Samsung A54 */
+@media (max-width: 480px) and (min-height: 2000px) {
+  .chats-list {
+    padding-bottom: 30px;
+  }
+
+  .chat-item {
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .chat-avatar {
+    width: 56px;
+    height: 56px;
+    font-size: 22px;
+  }
+
+  .chat-name {
+    font-size: 16px;
+  }
+
+  .chat-preview {
+    font-size: 14px;
+  }
+
+  .sidebar-user-header {
+    padding: 16px 18px;
+    min-height: 64px;
+  }
+
+  .user-avatar-large {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+  }
+
+  .user-name-large {
+    font-size: 16px;
+  }
 }

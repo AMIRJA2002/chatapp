@@ -26,10 +26,17 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:80",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:80",
+        "*"
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 security = HTTPBearer()
@@ -82,6 +89,11 @@ class ConnectionManager:
                 await connection.send_json(message)
 
 manager = ConnectionManager()
+
+# Health check endpoint
+@app.get("/api/health")
+async def health_check():
+    return {"status": "ok", "message": "Backend is running"}
 
 # Auth endpoints
 @app.post("/api/auth/register", response_model=dict)
